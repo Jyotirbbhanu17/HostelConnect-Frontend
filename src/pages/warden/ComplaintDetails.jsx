@@ -16,8 +16,8 @@ function ComplaintDetails() {
     complaint?.status || ""
   );
 
-  const [severity, setSeverity] = useState(
-    complaint?.severity || ""
+  const [priority, setPriority] = useState(
+    complaint?.priority || ""
   );
 
   const [notes, setNotes] = useState(
@@ -66,10 +66,6 @@ function ComplaintDetails() {
             </div>
 
             <div className="info-item">
-              <strong>Block:</strong> {complaint.block}
-            </div>
-
-            <div className="info-item">
               <strong>Room:</strong> {complaint.room}
             </div>
 
@@ -109,10 +105,10 @@ function ComplaintDetails() {
           <option>Resolved</option>
         </select>
 
-        <label>Severity</label>
+        <label>Priority</label>
         <select
-          value={severity}
-          onChange={(e) => setSeverity(e.target.value)}
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
         >
           <option>Low</option>
           <option>Medium</option>

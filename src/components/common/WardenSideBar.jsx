@@ -2,10 +2,7 @@ import { NavLink } from "react-router-dom";
 
 function WardenSidebar() {
   return (
-    <aside
-      className="hc-sidebar"
-      style={{ background: "#0f172a", color: "white" }}
-    >
+    <aside className="hc-sidebar">
       <div className="hc-brand">HostelConnect</div>
 
       <nav className="hc-nav">

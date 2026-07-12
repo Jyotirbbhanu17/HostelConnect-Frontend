@@ -29,7 +29,7 @@ function Notices() {
   ];
 
   return (
-    <div className="notices-page">
+    <div className="student-notices-page">
       <div className="notice-grid">
         {notices.map((notice) => (
           <div key={notice.id} className="notice-card">

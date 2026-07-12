@@ -1,44 +1,56 @@
-.notices-page {
+.student-notices-page {
   width: 100%;
+  max-width: 1100px;
 }
 
-.notice-grid {
+.student-notices-page .notice-grid {
   display: grid;
   gap: 20px;
 }
 
-.notice-card {
-  background: white;
+.student-notices-page .notice-card {
+  background: var(--hc-surface);
   padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-  border: 1px solid #e5e7eb;
+  border-radius: var(--hc-radius-lg);
+  box-shadow: var(--hc-shadow-card);
+  border: 1px solid var(--hc-border);
+  transition: box-shadow 180ms ease, transform 180ms ease;
 }
 
-.notice-header {
+.student-notices-page .notice-card:hover {
+  box-shadow: var(--hc-shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.student-notices-page .notice-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.notice-header h3 {
+.student-notices-page .notice-header h3 {
   margin: 0;
   font-size: 20px;
 }
 
-.notice-header span {
+.student-notices-page .notice-header span {
   color: #6b7280;
   font-size: 14px;
 }
 
-.notice-card p {
+.student-notices-page .notice-card p {
   color: #4b5563;
   line-height: 1.6;
 }
-.notice-author {
+.student-notices-page .notice-author {
   color: #6b7280;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 12px;
+}
+
+@media (max-width: 600px) {
+  .student-notices-page .notice-card { padding: 18px; }
+  .student-notices-page .notice-header { align-items: flex-start; flex-direction: column; gap: 6px; }
 }

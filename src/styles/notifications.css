@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  max-width: 960px;
 }
 
 .notification-card {
@@ -13,6 +15,12 @@
   align-items: flex-start;
   border: 1px solid #e5e7eb;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.notification-card:hover {
+  box-shadow: var(--hc-shadow-card-hover);
+  transform: translateY(-2px);
 }
 
 .notification-icon {
@@ -34,4 +42,9 @@
   margin-top: 6px;
   color: #6b7280;
   font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  .notification-card { gap: 12px; padding: 16px; }
+  .notification-content p { line-height: 1.5; }
 }

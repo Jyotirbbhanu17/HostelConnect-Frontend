@@ -25,17 +25,18 @@ function Dashboard() {
       <div className="hc-recent">
         <h2>Complaints Overview</h2>
 
-        <table className="hc-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Severity</th>
-              <th>Upvotes</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <div className="table-wrap">
+          <table className="hc-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Upvotes</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
           <tbody>
             {/* Complaint 1 */}
@@ -93,10 +94,6 @@ function Dashboard() {
 
                     <p>
                       <strong>Hostel:</strong> H. Bhabha Hostel
-                    </p>
-
-                    <p>
-                      <strong>Block:</strong> A
                     </p>
 
                     <p>
@@ -165,10 +162,6 @@ function Dashboard() {
                     </p>
 
                     <p>
-                      <strong>Block:</strong> C
-                    </p>
-
-                    <p>
                       <strong>Room:</strong> C-205
                     </p>
                   </div>
@@ -234,10 +227,6 @@ function Dashboard() {
                     </p>
 
                     <p>
-                      <strong>Block:</strong> B
-                    </p>
-
-                    <p>
                       <strong>Room:</strong> B-112
                     </p>
                   </div>
@@ -245,7 +234,8 @@ function Dashboard() {
               </tr>
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   );

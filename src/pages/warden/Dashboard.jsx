@@ -23,12 +23,15 @@ function Dashboard() {
     .sort((a, b) => b.upvotes - a.upvotes)
     .slice(0, 5);
 
+  const getStatusClass = (status) => {
+    if (status === "Resolved") return "badge-resolved";
+    if (status === "In Progress") return "badge-progress";
+    return "badge-default";
+  };
+
   return (
-    <div className="warden-dashboard">
-
-      {/* Stats Cards */}
+    <div className="warden-dashboard warden-page warden-stack">
       <div className="stats-grid">
-
         <div className="stat-card">
           <h4>Total Complaints</h4>
           <h2>{totalComplaints}</h2>
@@ -48,71 +51,65 @@ function Dashboard() {
           <h4>Resolved</h4>
           <h2>{resolved}</h2>
         </div>
-
       </div>
 
-      {/* Top Complaints Table */}
-      <div className="dashboard-table-card">
+      <div className="warden-card">
+        <div className="warden-card-header">
+          <h2 className="warden-section-title">Top Priority Complaints</h2>
+        </div>
 
-        <h2>Top Priority Complaints</h2>
-
-        <table className="dashboard-table">
-
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Upvotes</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            {topComplaints.map((complaint) => (
-              <tr key={complaint.id}>
-
-                <td>{complaint.title}</td>
-
-                <td>{complaint.category}</td>
-
-                <td>
-                  <span
-                    className={`status-badge ${complaint.status
-                      .toLowerCase()
-                      .replace(" ", "-")}`}
-                  >
-                    {complaint.status}
-                  </span>
-                </td>
-
-                <td>
-                  <span className="upvote-badge">
-                    ↑ {complaint.upvotes}
-                  </span>
-                </td>
-
-                <td>
-                  <button
-                    className="view-btn"
-                    onClick={() =>
-                      navigate(`/warden/complaints/${complaint.id}`)
-                    }
-                  >
-                    View Details
-                  </button>
-                </td>
-
+        <div className="warden-table-wrap">
+          <table className="warden-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Upvotes</th>
+                <th>Action</th>
               </tr>
-            ))}
+            </thead>
 
-          </tbody>
+            <tbody>
+              {topComplaints.map((complaint) => (
+                <tr key={complaint.id}>
+                  <td className="warden-title-cell">{complaint.title}</td>
+                  <td>{complaint.category}</td>
 
-        </table>
+                  <td>
+                    <span
+                      className={`status-badge ${getStatusClass(
+                        complaint.status
+                      )}`}
+                    >
+                      {complaint.status}
+                    </span>
+                  </td>
 
+                  <td>
+                    <span className="upvote-badge">
+                      <span aria-hidden="true">{"\u2191"}</span>
+                      {complaint.upvotes}
+                    </span>
+                  </td>
+
+                  <td>
+                    <button
+                      className="view-btn"
+                      type="button"
+                      onClick={() =>
+                        navigate(`/warden/complaints/${complaint.id}`)
+                      }
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-
     </div>
   );
 }

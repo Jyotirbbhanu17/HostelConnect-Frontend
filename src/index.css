@@ -7,3 +7,56 @@ body,
   padding: 0;
   overflow: hidden;
 }
+
+:root {
+  --hc-navy-950: #0f172a;
+  --hc-navy-900: #16213b;
+  --hc-blue-700: #1d4ed8;
+  --hc-blue-600: #2563eb;
+  --hc-blue-100: #dbeafe;
+  --hc-slate-950: #172033;
+  --hc-slate-700: #475569;
+  --hc-slate-600: #64748b;
+  --hc-slate-300: #cbd5e1;
+  --hc-slate-200: #e2e8f0;
+  --hc-slate-100: #f1f5f9;
+  --hc-slate-50: #f8fafc;
+  --hc-surface: #ffffff;
+  --hc-page-bg: #f4f7fb;
+  --hc-border: #e2e8f0;
+  --hc-radius-lg: 18px;
+  --hc-radius-md: 12px;
+  --hc-shadow-card: 0 10px 28px rgba(15, 23, 42, 0.06);
+  --hc-shadow-card-hover: 0 16px 34px rgba(15, 23, 42, 0.1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--hc-page-bg);
+  color: var(--hc-slate-950);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+select,
+textarea,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+  outline-offset: 2px;
+}
