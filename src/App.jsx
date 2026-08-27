@@ -10,6 +10,7 @@ import MyComplaints from "./pages/MyComplaints";
 import Notices from "./pages/Notices";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
+import Login from "./pages/Login";
 
 // Warden Layout
 import WardenLayout from "./layouts/WardenLayout";
@@ -25,6 +26,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
         {/* Student Routes */}
         <Route element={<StudentLayout />}>
