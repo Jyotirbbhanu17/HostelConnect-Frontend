@@ -104,7 +104,11 @@ function MyComplaints() {
           <option value="">Categories</option>
           <option value="Electrical">Electrical</option>
           <option value="Internet">Internet</option>
+          <option value="Water">Water</option>
+          <option value="Cleanliness">Cleanliness</option>
+          <option value="Plumbing">Plumbing</option>
           <option value="Mess">Mess</option>
+          <option value="Other">Other</option>
         </select>
 
         <select

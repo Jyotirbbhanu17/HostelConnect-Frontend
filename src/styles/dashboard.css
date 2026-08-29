@@ -67,3 +67,22 @@
   .hc-table th, .hc-table td { padding-inline: 16px; }
   .admin-btn { display: none; }
 }
+.complaint-image {
+  margin: 20px 0;
+}
+
+.complaint-image p {
+  margin-bottom: 10px;
+}
+
+.complaint-image-preview {
+  display: block;
+  max-width: 500px;
+  max-height: 350px;
+  width: auto;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #dbe4f0;
+  object-fit: contain;
+}
