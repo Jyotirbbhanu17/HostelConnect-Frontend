@@ -153,23 +153,18 @@ function Dashboard() {
   // ============================================================
 
   const getImageUrl = (imagePath) => {
-    if (!imagePath) {
-      return null;
-    }
+  if (!imagePath) return null;
 
-    // If backend already returns a complete URL,
-    // use it directly.
-    if (
-      imagePath.startsWith("http://") ||
-      imagePath.startsWith("https://")
-    ) {
-      return imagePath;
-    }
+  // Already a complete URL
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
 
-    // Otherwise assume the image is being served
-    // from the Spring Boot backend.
-    return `http://localhost:8081/${imagePath}`;
-  };
+  // Remove leading slash so we don't create //
+  const cleanPath = imagePath.replace(/^\/+/, "");
+
+  return `http://localhost:8081/${cleanPath}`;
+};
 
   // ============================================================
   // VIEW
@@ -186,7 +181,7 @@ function Dashboard() {
       <div className="dashboard-stats">
 
         <div className="card">
-          <h3>Total Complaints</h3>
+          <h3>My Total Complaints</h3>
           <h1>{totalComplaints}</h1>
         </div>
 

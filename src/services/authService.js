@@ -5,6 +5,7 @@ const AUTH_USER_KEY = "hostelConnectUser";
 export async function loginUser({ email, password }) {
   return apiRequest("/auth/login", {
     method: "POST",
+    skipAuth: true,
     body: JSON.stringify({ email, password }),
   });
 }
@@ -25,7 +26,7 @@ export function saveAuthSession(user) {
 
 export function clearAuthSession() {
   clearAuthToken();
-  localStorage.removeItem(AUTH_USER_KEY);
+
 }
 
 export function getAuthUser() {
