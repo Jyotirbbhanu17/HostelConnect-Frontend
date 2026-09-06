@@ -1,6 +1,8 @@
-import { Outlet, useLocation } from "react-router-dom";
-import {useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
 import Sidebar from "../components/common/Sidebar";
+import { clearAuthSession } from "../services/authService";
+import { apiRequest } from "../services/api";
 
 const PAGE_TITLES = {
   "/dashboard": "Dashboard",
@@ -15,6 +17,55 @@ function StudentLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const loadUnreadCount = useCallback(async () => {
+    try {
+      const data = await apiRequest("/notifications/unread-count");
+
+      if (typeof data === "number") {
+        setUnreadCount(data);
+      } else if (typeof data?.count === "number") {
+        setUnreadCount(data.count);
+      } else if (typeof data?.unreadCount === "number") {
+        setUnreadCount(data.unreadCount);
+      }
+    } catch (err) {
+      console.error("Failed to load unread notification count:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUnreadCount();
+
+    const intervalId = setInterval(() => {
+      loadUnreadCount();
+    }, 10000);
+
+    const handleNotificationsUpdated = () => {
+      loadUnreadCount();
+    };
+
+    window.addEventListener(
+      "notifications-updated",
+      handleNotificationsUpdated
+    );
+
+    return () => {
+      clearInterval(intervalId);
+
+      window.removeEventListener(
+        "notifications-updated",
+        handleNotificationsUpdated
+      );
+    };
+  }, [loadUnreadCount]);
+
+  const handleLogout = () => {
+    clearAuthSession();
+    navigate("/login");
+  };
+
   return (
     <div className="hc-app">
       <Sidebar />
@@ -27,15 +78,37 @@ function StudentLayout() {
 
           <div className="hc-top-actions">
             <button
-            className="icon-btn"
-            onClick={()=>navigate("/notifications")}>
+              className="notification-bell-btn"
+              type="button"
+              onClick={() => navigate("/notifications")}
+              aria-label={`Notifications${
+                unreadCount > 0 ? `, ${unreadCount} unread` : ""
+              }`}
+            >
               🔔
+
+              {unreadCount > 0 && (
+                <span className="notification-count-badge">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
             </button>
+
             <button
-            className="admin-btn"
-            onClick={()=>navigate("/profile")}>
+              className="admin-btn"
+              type="button"
+              onClick={() => navigate("/profile")}
+            >
               Jyotirbhanu
-              </button>
+            </button>
+
+            <button
+              className="logout-btn"
+              type="button"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
           </div>
         </header>
 

@@ -1,5 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import WardenSidebar from "../components/common/WardenSidebar";
+import { clearAuthSession } from "../services/authService";
 import "../styles/warden.css";
 
 const PAGE_TITLES = {
@@ -12,6 +13,11 @@ const PAGE_TITLES = {
 function WardenLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearAuthSession();
+    navigate("/login");
+  };
 
   return (
     <div className="hc-app">
@@ -26,8 +32,11 @@ function WardenLayout() {
           </h1>
 
           <div className="hc-top-actions">
-            <button className="icon-btn" type="button">
-              {"\uD83D\uDD14"}
+            <button
+              className="icon-btn"
+              type="button"
+            >
+              🔔
             </button>
 
             <button
@@ -36,6 +45,14 @@ function WardenLayout() {
               onClick={() => navigate("/warden/profile")}
             >
               Hostel Warden
+            </button>
+
+            <button
+              className="logout-btn"
+              type="button"
+              onClick={handleLogout}
+            >
+              Logout
             </button>
           </div>
         </header>

@@ -72,3 +72,16 @@
     padding: 20px;
   }
 }
+.warden-loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.warden-error {
+  padding: 30px 20px;
+  text-align: center;
+  color: #dc2626;
+  font-size: 14px;
+}

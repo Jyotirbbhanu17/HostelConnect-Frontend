@@ -86,3 +86,66 @@
   border: 1px solid #dbe4f0;
   object-fit: contain;
 }
+.logout-btn {
+  padding: 10px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+  box-shadow: 0 6px 14px rgba(220, 38, 38, .2);
+  transform: translateY(-1px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}
+.notification-bell-btn {
+  position: relative;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--hc-border);
+  border-radius: 10px;
+  background: var(--hc-surface);
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.notification-bell-btn:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.notification-count-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}

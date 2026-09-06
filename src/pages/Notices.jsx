@@ -1,32 +1,67 @@
+import { useEffect, useState } from "react";
+import { apiRequest } from "../services/api";
 import "../styles/notices.css";
 
 function Notices() {
-  const notices = [
-    {
-      id: 1,
-      title: "Water Supply Maintenance",
-      author: "1st year Warden - Mr. Sharma",
-      date: "05/06/2026",
-      description:
-        "Water supply will be unavailable from 10 AM to 1 PM due to maintenance work.",
-    },
-    {
-      id: 2,
-      title: "Hostel Meeting",
-      author: "2nd year Warden - Mr. Girish Soni",
-      date: "03/06/2026",
-      description:
-        "All residents are requested to attend the monthly hostel meeting.",
-    },
-    {
-      id: 3,
-      title: "Water Crisis Alert",
-      author: "Chief Warden - Mr. Sakle",
-      date: "01/06/2026",
-      description:
-        "Water shortage will be there from next monday onwwards. All be prepared ",
-    },
-  ];
+  const [notices, setNotices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadNotices() {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const data = await apiRequest("/notices");
+
+        setNotices(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Failed to load notices:", err);
+        setError("Unable to load notices. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadNotices();
+  }, []);
+
+  const formatDate = (dateValue) => {
+    if (!dateValue) return "-";
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return dateValue;
+    }
+
+    return date.toLocaleDateString("en-IN");
+  };
+
+  if (isLoading) {
+    return (
+      <div className="student-notices-page">
+        <p>Loading notices...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="student-notices-page">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (notices.length === 0) {
+    return (
+      <div className="student-notices-page">
+        <p>No notices available.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="student-notices-page">
@@ -35,14 +70,17 @@ function Notices() {
           <div key={notice.id} className="notice-card">
             <div className="notice-header">
               <h3>{notice.title}</h3>
-              <span>{notice.date}</span>
+
+              <span>
+                {formatDate(notice.createdAt || notice.date)}
+              </span>
             </div>
 
             <p className="notice-author">
-              👤 {notice.author}
+              👤 {notice.author || "Hostel Warden"}
             </p>
 
-            <p>{notice.description}</p>
+            <p>{notice.content || notice.description}</p>
           </div>
         ))}
       </div>
