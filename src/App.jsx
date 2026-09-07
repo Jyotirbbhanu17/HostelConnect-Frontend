@@ -1,4 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+// Common
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 // Student Layout
 import StudentLayout from "./layouts/StudentLayout";
@@ -27,89 +35,136 @@ function App() {
     <BrowserRouter>
       <Routes>
 
+        {/* =====================================================
+            PUBLIC ROUTES
+        ====================================================== */}
+
         <Route
           path="/login"
           element={<Login />}
         />
 
-        {/* Student Routes */}
-        <Route element={<StudentLayout />}>
-          <Route
-            index
-            element={<Navigate to="/dashboard" replace />}
-          />
+        <Route
+          path="/"
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
+        />
 
-          <Route
-            path="/dashboard"
-            element={<Dashboard />}
-          />
+        {/* =====================================================
+            STUDENT ROUTES
+        ====================================================== */}
 
-          <Route
-            path="/submit-complaint"
-            element={<SubmitComplaint />}
-          />
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRole="STUDENT"
+            />
+          }
+        >
+          <Route element={<StudentLayout />}>
 
-          <Route
-            path="/my-complaints"
-            element={<MyComplaints />}
-          />
+            <Route
+              path="/dashboard"
+              element={<Dashboard />}
+            />
 
-          <Route
-            path="/notices"
-            element={<Notices />}
-          />
+            <Route
+              path="/submit-complaint"
+              element={<SubmitComplaint />}
+            />
 
-          <Route
-            path="/notifications"
-            element={<Notifications />}
-          />
+            <Route
+              path="/my-complaints"
+              element={<MyComplaints />}
+            />
 
-          <Route
-            path="/profile"
-            element={<Profile />}
-          />
+            <Route
+              path="/notices"
+              element={<Notices />}
+            />
+
+            <Route
+              path="/notifications"
+              element={<Notifications />}
+            />
+
+            <Route
+              path="/profile"
+              element={<Profile />}
+            />
+
+          </Route>
         </Route>
 
-        {/* Warden Routes */}
+        {/* =====================================================
+            WARDEN ROUTES
+        ====================================================== */}
+
         <Route
           path="/warden"
-          element={<WardenLayout />}
+          element={
+            <ProtectedRoute
+              allowedRole="WARDEN"
+            />
+          }
         >
-          <Route
-            index
-            element={
-              <Navigate
-                to="dashboard"
-                replace
-              />
-            }
-          />
+          <Route element={<WardenLayout />}>
 
-          <Route
-            path="dashboard"
-            element={<WardenDashboard />}
-          />
+            <Route
+              index
+              element={
+                <Navigate
+                  to="dashboard"
+                  replace
+                />
+              }
+            />
 
-          <Route
-            path="complaints"
-            element={<ManageComplaints />}
-          />
+            <Route
+              path="dashboard"
+              element={<WardenDashboard />}
+            />
 
-          <Route
-            path="complaints/:id"
-            element={<ComplaintDetails />}
-          />
+            <Route
+              path="complaints"
+              element={<ManageComplaints />}
+            />
 
-          <Route
-            path="notices"
-            element={<WardenNotices />}
-          />
+            <Route
+              path="complaints/:id"
+              element={<ComplaintDetails />}
+            />
 
-          <Route
-            path="profile"
-            element={<WardenProfile />}
-          />
+            <Route
+              path="notices"
+              element={<WardenNotices />}
+            />
+
+            <Route
+              path="profile"
+              element={<WardenProfile />}
+            />
+
+          </Route>
         </Route>
+
+        {/* =====================================================
+            UNKNOWN ROUTES
+        ====================================================== */}
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
+        />
 
       </Routes>
     </BrowserRouter>

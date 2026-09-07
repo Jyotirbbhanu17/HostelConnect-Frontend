@@ -6,17 +6,28 @@ function Dashboard() {
   // DATA
   // ============================================================
 
-  // Only the logged-in student's complaints.
-  // Used for the dashboard statistics/cards.
+  // Complaints belonging only to the logged-in student.
+  // Used for dashboard statistics and ownership checks.
   const [myComplaints, setMyComplaints] = useState([]);
 
-  // Complaints posted by ALL students.
-  // Used for the Complaints Overview table.
+  // Complaints submitted by all students.
+  // Used for the Complaints Overview section.
   const [recentComplaints, setRecentComplaints] = useState([]);
 
   const [openComplaint, setOpenComplaint] = useState(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Stores complaint IDs that this student has upvoted
+  // during the current page session.
+  const [upvotedComplaints, setUpvotedComplaints] = useState(
+    new Set()
+  );
+
+  // Stores the complaint currently being upvoted.
+  // Prevents repeated clicks while the request is running.
+  const [upvoteLoading, setUpvoteLoading] = useState(null);
 
   // ============================================================
   // LOAD DASHBOARD DATA
@@ -28,24 +39,36 @@ function Dashboard() {
         setIsLoading(true);
         setError("");
 
-        // We intentionally call TWO different endpoints:
-        //
-        // 1. /complaints/my
-        //    -> complaints belonging to logged-in student
-        //
-        // 2. /complaints?sortBy=newest
-        //    -> complaints belonging to ALL students
-
+        /*
+         * Two endpoints are intentionally used:
+         *
+         * 1. /complaints/my
+         *    -> complaints belonging to logged-in student
+         *
+         * 2. /complaints?sortBy=newest
+         *    -> complaints belonging to all students
+         */
         const [myData, allData] = await Promise.all([
           apiRequest("/complaints/my"),
           apiRequest("/complaints?sortBy=newest"),
         ]);
 
-        setMyComplaints(Array.isArray(myData) ? myData : []);
-        setRecentComplaints(Array.isArray(allData) ? allData : []);
+        setMyComplaints(
+          Array.isArray(myData) ? myData : []
+        );
+
+        setRecentComplaints(
+          Array.isArray(allData) ? allData : []
+        );
       } catch (err) {
-        console.error("Failed to load dashboard data:", err);
-        setError("Unable to load complaints. Please try again.");
+        console.error(
+          "Failed to load dashboard data:",
+          err
+        );
+
+        setError(
+          "Unable to load complaints. Please try again."
+        );
       } finally {
         setIsLoading(false);
       }
@@ -58,18 +81,113 @@ function Dashboard() {
   // STUDENT-SPECIFIC STATISTICS
   // ============================================================
 
-  // These statistics MUST use myComplaints,
-  // not recentComplaints.
-
   const totalComplaints = myComplaints.length;
 
   const inProgressComplaints = myComplaints.filter(
-    (complaint) => complaint.status === "IN_PROGRESS"
+    (complaint) =>
+      complaint.status === "IN_PROGRESS"
   ).length;
 
   const resolvedComplaints = myComplaints.filter(
-    (complaint) => complaint.status === "RESOLVED"
+    (complaint) =>
+      complaint.status === "RESOLVED"
   ).length;
+
+  // ============================================================
+  // COMPLAINT OWNERSHIP
+  // ============================================================
+
+  /*
+   * Create a Set containing IDs of complaints belonging
+   * to the currently logged-in student.
+   *
+   * This allows us to disable the upvote button for
+   * the student's own complaints.
+   */
+  const myComplaintIds = new Set(
+    myComplaints.map(
+      (complaint) => complaint.id
+    )
+  );
+
+  // ============================================================
+  // UPVOTE
+  // ============================================================
+
+  const handleUpvote = async (complaintId) => {
+    // Prevent repeated clicks while request is running.
+    if (upvoteLoading === complaintId) {
+      return;
+    }
+
+    // Prevent self-upvote on frontend.
+    // Backend also enforces this rule.
+    if (myComplaintIds.has(complaintId)) {
+      alert(
+        "You cannot upvote your own complaint."
+      );
+      return;
+    }
+
+    // Prevent duplicate vote during current page session.
+    if (upvotedComplaints.has(complaintId)) {
+      return;
+    }
+
+    try {
+      setUpvoteLoading(complaintId);
+
+      const updatedComplaint = await apiRequest(
+        `/complaints/${complaintId}/upvote`,
+        {
+          method: "POST",
+        }
+      );
+
+      /*
+       * Use the complete response returned by the backend.
+       *
+       * This is important because the backend can update:
+       * - upvotes
+       * - priority
+       *
+       * based on the new vote count.
+       */
+      setRecentComplaints(
+        (currentComplaints) =>
+          currentComplaints.map((complaint) =>
+            complaint.id === updatedComplaint.id
+              ? updatedComplaint
+              : complaint
+          )
+      );
+
+      // Remember this vote for the current page session.
+      setUpvotedComplaints(
+        (currentUpvoted) => {
+          const updated = new Set(
+            currentUpvoted
+          );
+
+          updated.add(complaintId);
+
+          return updated;
+        }
+      );
+    } catch (err) {
+      console.error(
+        "Failed to upvote complaint:",
+        err
+      );
+
+      alert(
+        err.message ||
+          "Unable to upvote complaint."
+      );
+    } finally {
+      setUpvoteLoading(null);
+    }
+  };
 
   // ============================================================
   // DISPLAY HELPERS
@@ -81,6 +199,8 @@ function Dashboard() {
     MESS: "Mess",
     WATER: "Water",
     CLEANLINESS: "Cleanliness",
+    INTERNET: "Internet",
+    OTHER: "Other",
 
     IN_PROGRESS: "In Progress",
     SUBMITTED: "Submitted",
@@ -103,7 +223,10 @@ function Dashboard() {
     return value
       .toLowerCase()
       .replace(/_/g, " ")
-      .replace(/\b\w/g, (letter) => letter.toUpperCase());
+      .replace(
+        /\b\w/g,
+        (letter) => letter.toUpperCase()
+      );
   };
 
   const formatCategory = (category) => {
@@ -153,18 +276,26 @@ function Dashboard() {
   // ============================================================
 
   const getImageUrl = (imagePath) => {
-  if (!imagePath) return null;
+    if (!imagePath) {
+      return null;
+    }
 
-  // Already a complete URL
-  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
-    return imagePath;
-  }
+    // Already a complete URL.
+    if (
+      imagePath.startsWith("http://") ||
+      imagePath.startsWith("https://")
+    ) {
+      return imagePath;
+    }
 
-  // Remove leading slash so we don't create //
-  const cleanPath = imagePath.replace(/^\/+/, "");
+    // Remove leading slash to avoid double slash.
+    const cleanPath = imagePath.replace(
+      /^\/+/,
+      ""
+    );
 
-  return `http://localhost:8081/${cleanPath}`;
-};
+    return `http://localhost:8081/${cleanPath}`;
+  };
 
   // ============================================================
   // VIEW
@@ -173,10 +304,9 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
 
-      {/* ========================================================
+      {/* ======================================================
           DASHBOARD STATISTICS
-          These are ONLY for the logged-in student.
-      ======================================================== */}
+      ======================================================= */}
 
       <div className="dashboard-stats">
 
@@ -197,10 +327,9 @@ function Dashboard() {
 
       </div>
 
-      {/* ========================================================
+      {/* ======================================================
           ALL RECENT COMPLAINTS
-          This section shows complaints from ALL students.
-      ======================================================== */}
+      ======================================================= */}
 
       <div className="hc-recent">
 
@@ -209,7 +338,9 @@ function Dashboard() {
         {/* Loading */}
         {isLoading && (
           <div className="complaint-details">
-            <p>Loading recent complaints...</p>
+            <p>
+              Loading recent complaints...
+            </p>
           </div>
         )}
 
@@ -220,12 +351,14 @@ function Dashboard() {
           </div>
         )}
 
-        {/* No complaints */}
+        {/* Empty state */}
         {!isLoading &&
           !error &&
           recentComplaints.length === 0 && (
             <div className="complaint-details">
-              <p>No complaints have been posted yet.</p>
+              <p>
+                No complaints have been posted yet.
+              </p>
             </div>
           )}
 
@@ -250,155 +383,233 @@ function Dashboard() {
 
                 <tbody>
 
-                  {recentComplaints.map((complaint) => (
-                    <React.Fragment key={complaint.id}>
+                  {recentComplaints.map(
+                    (complaint) => {
+                      const isOwnComplaint =
+                        myComplaintIds.has(
+                          complaint.id
+                        );
 
-                      {/* ===============================
-                          COMPLAINT ROW
-                      =============================== */}
+                      const hasUpvoted =
+                        upvotedComplaints.has(
+                          complaint.id
+                        );
 
-                      <tr>
+                      const isUpvoteLoading =
+                        upvoteLoading ===
+                        complaint.id;
 
-                        <td>
-                          {formatCategory(complaint.category)}
-                        </td>
+                      return (
+                        <React.Fragment
+                          key={complaint.id}
+                        >
 
-                        <td>
-                          <span
-                            className={`status-badge ${getStatusClass(
-                              complaint.status
-                            )}`}
-                          >
-                            {formatStatus(complaint.status)}
-                          </span>
-                        </td>
+                          {/* Complaint row */}
+                          <tr>
 
-                        <td>
-                          {formatPriority(complaint.priority)}
-                        </td>
+                            <td>
+                              {formatCategory(
+                                complaint.category
+                              )}
+                            </td>
 
-                        <td>
-                          <button
-                            className="upvote-btn"
-                            type="button"
-                          >
-                            {"\u2B06"} {complaint.upvotes ?? 0}
-                          </button>
-                        </td>
+                            <td>
+                              <span
+                                className={`status-badge ${getStatusClass(
+                                  complaint.status
+                                )}`}
+                              >
+                                {formatStatus(
+                                  complaint.status
+                                )}
+                              </span>
+                            </td>
 
-                        <td>
-                          {formatDate(complaint.createdAt)}
-                        </td>
+                            <td>
+                              {formatPriority(
+                                complaint.priority
+                              )}
+                            </td>
 
-                        <td>
-                          <button
-                            className="details-btn"
-                            type="button"
-                            onClick={() =>
-                              setOpenComplaint(
-                                openComplaint === complaint.id
-                                  ? null
-                                  : complaint.id
-                              )
-                            }
-                          >
-                            {openComplaint === complaint.id
-                              ? "Hide Details"
-                              : "View Details"}
-                          </button>
-                        </td>
+                            <td>
+                              <button
+                                className="upvote-btn"
+                                type="button"
+                                disabled={
+                                  isOwnComplaint ||
+                                  hasUpvoted ||
+                                  isUpvoteLoading
+                                }
+                                title={
+                                  isOwnComplaint
+                                    ? "You cannot upvote your own complaint."
+                                    : hasUpvoted
+                                      ? "You have already upvoted this complaint."
+                                      : "Upvote this complaint"
+                                }
+                                onClick={() =>
+                                  handleUpvote(
+                                    complaint.id
+                                  )
+                                }
+                              >
+                                {isUpvoteLoading
+                                  ? "..."
+                                  : `⬆ ${complaint.upvotes ?? 0}`}
+                              </button>
+                            </td>
 
-                      </tr>
+                            <td>
+                              {formatDate(
+                                complaint.createdAt
+                              )}
+                            </td>
 
-                      {/* ===============================
-                          COMPLAINT DETAILS
-                      =============================== */}
+                            <td>
+                              <button
+                                className="details-btn"
+                                type="button"
+                                onClick={() =>
+                                  setOpenComplaint(
+                                    openComplaint ===
+                                      complaint.id
+                                      ? null
+                                      : complaint.id
+                                  )
+                                }
+                              >
+                                {openComplaint ===
+                                complaint.id
+                                  ? "Hide Details"
+                                  : "View Details"}
+                              </button>
+                            </td>
 
-                      {openComplaint === complaint.id && (
-                        <tr>
-                          <td colSpan="6">
+                          </tr>
 
-                            <div className="complaint-details">
+                          {/* Complaint details */}
+                          {openComplaint ===
+                            complaint.id && (
+                            <tr>
 
-                              {/* TITLE */}
-                              <p>
-                                <strong>Title:</strong>{" "}
-                                {complaint.title || "-"}
-                              </p>
+                              <td colSpan="6">
 
-                              {/* DESCRIPTION */}
-                              <p>
-                                <strong>Description:</strong>{" "}
-                                {complaint.description || "-"}
-                              </p>
+                                <div className="complaint-details">
 
-                              {/* IMAGE */}
-                              {complaint.imagePath && (
-                                <div className="complaint-image">
-
+                                  {/* Title */}
                                   <p>
-                                    <strong>Attached Image:</strong>
+                                    <strong>
+                                      Title:
+                                    </strong>{" "}
+                                    {complaint.title ||
+                                      "-"}
                                   </p>
 
-                                  <img
-                                    src={getImageUrl(
-                                      complaint.imagePath
+                                  {/* Description */}
+                                  <p>
+                                    <strong>
+                                      Description:
+                                    </strong>{" "}
+                                    {complaint.description ||
+                                      "-"}
+                                  </p>
+
+                                  {/* Image */}
+                                  {complaint.imagePath && (
+                                    <div className="complaint-image">
+
+                                      <p>
+                                        <strong>
+                                          Attached Image:
+                                        </strong>
+                                      </p>
+
+                                      <img
+                                        src={getImageUrl(
+                                          complaint.imagePath
+                                        )}
+                                        alt="Complaint attachment"
+                                        className="complaint-image-preview"
+                                        onError={(
+                                          event
+                                        ) => {
+                                          event.currentTarget.style.display =
+                                            "none";
+                                        }}
+                                      />
+
+                                    </div>
+                                  )}
+
+                                  {/* Category */}
+                                  <p>
+                                    <strong>
+                                      Category:
+                                    </strong>{" "}
+                                    {formatCategory(
+                                      complaint.category
                                     )}
-                                    alt="Complaint attachment"
-                                    className="complaint-image-preview"
-                                    onError={(event) => {
-                                      event.currentTarget.style.display =
-                                        "none";
-                                    }}
-                                  />
+                                  </p>
+
+                                  {/* Status */}
+                                  <p>
+                                    <strong>
+                                      Status:
+                                    </strong>{" "}
+                                    {formatStatus(
+                                      complaint.status
+                                    )}
+                                  </p>
+
+                                  {/* Priority */}
+                                  <p>
+                                    <strong>
+                                      Priority:
+                                    </strong>{" "}
+                                    {formatPriority(
+                                      complaint.priority
+                                    )}
+                                  </p>
+
+                                  {/* Upvotes */}
+                                  <p>
+                                    <strong>
+                                      Upvotes:
+                                    </strong>{" "}
+                                    {complaint.upvotes ??
+                                      0}
+                                  </p>
+
+                                  {/* Resolution Note */}
+                                  <p>
+                                    <strong>
+                                      Resolution Note:
+                                    </strong>{" "}
+                                    {complaint.resolutionNote ||
+                                      "-"}
+                                  </p>
+
+                                  {/* Created Date */}
+                                  <p>
+                                    <strong>
+                                      Created At:
+                                    </strong>{" "}
+                                    {formatDate(
+                                      complaint.createdAt
+                                    )}
+                                  </p>
 
                                 </div>
-                              )}
 
-                              {/* CATEGORY */}
-                              <p>
-                                <strong>Category:</strong>{" "}
-                                {formatCategory(complaint.category)}
-                              </p>
+                              </td>
 
-                              {/* STATUS */}
-                              <p>
-                                <strong>Status:</strong>{" "}
-                                {formatStatus(complaint.status)}
-                              </p>
+                            </tr>
+                          )}
 
-                              {/* PRIORITY */}
-                              <p>
-                                <strong>Priority:</strong>{" "}
-                                {formatPriority(complaint.priority)}
-                              </p>
-
-                              {/* UPVOTES */}
-                              <p>
-                                <strong>Upvotes:</strong>{" "}
-                                {complaint.upvotes ?? 0}
-                              </p>
-
-                              {/* RESOLUTION NOTE */}
-                              <p>
-                                <strong>Resolution Note:</strong>{" "}
-                                {complaint.resolutionNote || "-"}
-                              </p>
-
-                              {/* CREATED DATE */}
-                              <p>
-                                <strong>Created At:</strong>{" "}
-                                {formatDate(complaint.createdAt)}
-                              </p>
-
-                            </div>
-
-                          </td>
-                        </tr>
-                      )}
-
-                    </React.Fragment>
-                  ))}
+                        </React.Fragment>
+                      );
+                    }
+                  )}
 
                 </tbody>
 
@@ -408,6 +619,7 @@ function Dashboard() {
           )}
 
       </div>
+
     </div>
   );
 }
