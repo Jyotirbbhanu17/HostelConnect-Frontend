@@ -15,7 +15,14 @@ function Notices() {
 
         const data = await apiRequest("/notices");
 
-        setNotices(Array.isArray(data) ? data : []);
+        const sortedNotices = Array.isArray(data)
+  ? [...data].sort(
+      (a, b) =>
+        new Date(b.createdAt) - new Date(a.createdAt)
+    )
+  : [];
+
+setNotices(sortedNotices);
       } catch (err) {
         console.error("Failed to load notices:", err);
         setError("Unable to load notices. Please try again.");

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import complaints from "../../data/complaints";
+import { apiRequest } from "../../services/api";
 // import "../../styles/manageComplaints.css";
 
 function ManageComplaints() {
@@ -11,44 +11,88 @@ function ManageComplaints() {
   const [priority, setPriority] = useState("All");
   const [sortBy, setSortBy] = useState("Most Upvoted");
 
-  let filteredComplaints = [...complaints];
+  const [complaints, setComplaints] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  if (category !== "All") {
-    filteredComplaints = filteredComplaints.filter(
-      (c) => c.category === category
-    );
-  }
+  const loadComplaints = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
 
-  if (status !== "All") {
-    filteredComplaints = filteredComplaints.filter((c) => c.status === status);
-  }
+      const params = new URLSearchParams();
 
-  if (priority !== "All") {
-    filteredComplaints = filteredComplaints.filter(
-      (c) => c.priority === priority
-    );
-  }
+      if (category !== "All") {
+        params.append("category", category);
+      }
 
-  if (sortBy === "Most Upvoted") {
-    filteredComplaints.sort((a, b) => b.upvotes - a.upvotes);
-  }
+      if (status !== "All") {
+        params.append("status", status);
+      }
 
-  if (sortBy === "Newest") {
-    filteredComplaints.sort((a, b) => new Date(b.date) - new Date(a.date));
-  }
+      if (priority !== "All") {
+        params.append("priority", priority);
+      }
 
-  if (sortBy === "Oldest") {
-    filteredComplaints.sort((a, b) => new Date(a.date) - new Date(b.date));
-  }
+      if (sortBy === "Most Upvoted") {
+        params.append("sortBy", "upvotes");
+      } else if (sortBy === "Newest") {
+        params.append("sortBy", "newest");
+      } else if (sortBy === "Oldest") {
+        params.append("sortBy", "oldest");
+      }
+
+      const queryString = params.toString();
+
+      const data = await apiRequest(
+        `/complaints${queryString ? `?${queryString}` : ""}`
+      );
+
+      setComplaints(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to load complaints:", err);
+      setError("Unable to load complaints. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadComplaints();
+  }, [category, status, priority, sortBy]);
+
+  const getStatusLabel = (statusValue) => {
+    if (statusValue === "IN_PROGRESS") return "In Progress";
+    if (statusValue === "RESOLVED") return "Resolved";
+    if (statusValue === "SUBMITTED") return "Submitted";
+
+    return statusValue || "-";
+  };
 
   const getStatusClass = (statusValue) => {
-    if (statusValue === "Resolved") return "badge-resolved";
-    if (statusValue === "In Progress") return "badge-progress";
+    if (statusValue === "RESOLVED") return "badge-resolved";
+    if (statusValue === "IN_PROGRESS") return "badge-progress";
+
     return "badge-default";
   };
 
-  const getPriorityClass = (priorityValue) =>
-    `priority-${priorityValue.toLowerCase()}`;
+  const getPriorityClass = (priorityValue) => {
+    if (!priorityValue) return "";
+
+    return `priority-${priorityValue.toLowerCase()}`;
+  };
+
+  const formatDate = (dateValue) => {
+    if (!dateValue) return "-";
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return dateValue;
+    }
+
+    return date.toLocaleDateString("en-IN");
+  };
 
   return (
     <div className="manage-complaints-page warden-page warden-stack">
@@ -68,6 +112,7 @@ function ManageComplaints() {
             <option value="Mess">Mess</option>
             <option value="Cleanliness">Cleanliness</option>
             <option value="Water">Water</option>
+            <option value="Internet">Internet</option>
             <option value="Other">Other</option>
           </select>
 
@@ -78,9 +123,9 @@ function ManageComplaints() {
             onChange={(e) => setStatus(e.target.value)}
           >
             <option value="All">All Status</option>
-            <option value="Submitted">Submitted</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Resolved">Resolved</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="RESOLVED">Resolved</option>
           </select>
 
           <select
@@ -90,10 +135,10 @@ function ManageComplaints() {
             onChange={(e) => setPriority(e.target.value)}
           >
             <option value="All">All Priorities</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-            <option value="Critical">Critical</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="CRITICAL">Critical</option>
           </select>
 
           <select
@@ -125,53 +170,70 @@ function ManageComplaints() {
             </thead>
 
             <tbody>
-              {filteredComplaints.map((complaint) => (
-                <tr key={complaint.id}>
-                  <td className="warden-title-cell">{complaint.title}</td>
-                  <td>{complaint.category}</td>
-
-                  <td>
-                    <span
-                      className={`status-badge ${getStatusClass(
-                        complaint.status
-                      )}`}
-                    >
-                      {complaint.status}
-                    </span>
-                  </td>
-
-                  <td>
-                    <span
-                      className={`priority-badge ${getPriorityClass(
-                        complaint.priority
-                      )}`}
-                    >
-                      {complaint.priority}
-                    </span>
-                  </td>
-
-                  <td>
-                    <span className="upvote-badge">
-                      <span aria-hidden="true">{"\u2191"}</span>
-                      {complaint.upvotes}
-                    </span>
-                  </td>
-
-                  <td>{complaint.date}</td>
-
-                  <td>
-                    <button
-                      className="view-btn"
-                      type="button"
-                      onClick={() =>
-                        navigate(`/warden/complaints/${complaint.id}`)
-                      }
-                    >
-                      View Details
-                    </button>
-                  </td>
+              {isLoading ? (
+                <tr>
+                  <td colSpan="7">Loading complaints...</td>
                 </tr>
-              ))}
+              ) : error ? (
+                <tr>
+                  <td colSpan="7">{error}</td>
+                </tr>
+              ) : complaints.length === 0 ? (
+                <tr>
+                  <td colSpan="7">No complaints found.</td>
+                </tr>
+              ) : (
+                complaints.map((complaint) => (
+                  <tr key={complaint.id}>
+                    <td className="warden-title-cell">
+                      {complaint.title}
+                    </td>
+
+                    <td>{complaint.category}</td>
+
+                    <td>
+                      <span
+                        className={`status-badge ${getStatusClass(
+                          complaint.status
+                        )}`}
+                      >
+                        {getStatusLabel(complaint.status)}
+                      </span>
+                    </td>
+
+                    <td>
+                      <span
+                        className={`priority-badge ${getPriorityClass(
+                          complaint.priority
+                        )}`}
+                      >
+                        {complaint.priority}
+                      </span>
+                    </td>
+
+                    <td>
+                      <span className="upvote-badge">
+                        <span aria-hidden="true">{"\u2191"}</span>
+                        {complaint.upvotes}
+                      </span>
+                    </td>
+
+                    <td>{formatDate(complaint.createdAt)}</td>
+
+                    <td>
+                      <button
+                        className="view-btn"
+                        type="button"
+                        onClick={() =>
+                          navigate(`/warden/complaints/${complaint.id}`)
+                        }
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
