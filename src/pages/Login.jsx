@@ -50,6 +50,11 @@ function Login() {
         navigate("/warden/dashboard", { replace: true });
         return;
       }
+      if (user.role === "ADMIN") {
+    saveAuthSession(user);
+    navigate("/admin/dashboard", { replace: true });
+    return;
+}
 
       setError("This user role is not supported in the frontend yet.");
     } catch (err) {

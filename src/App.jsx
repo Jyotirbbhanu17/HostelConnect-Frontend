@@ -4,7 +4,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-
+import AdminLayout from "./layouts/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminStudents from "./pages/admin/AdminStudents";
+import AdminImportStudents from "./pages/admin/AdminImportStudents";
+import AdminProfile from "./pages/admin/AdminProfile";
 // Common
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
@@ -151,7 +155,52 @@ function App() {
 
           </Route>
         </Route>
+                {/* =====================================================
+    ADMIN ROUTES
+====================================================== */}
 
+<Route
+    path="/admin"
+    element={
+        <ProtectedRoute
+            allowedRole="ADMIN"
+        />
+    }
+>
+    <Route element={<AdminLayout />}>
+
+        <Route
+            index
+            element={
+                <Navigate
+                    to="dashboard"
+                    replace
+                />
+            }
+        />
+
+        <Route
+            path="dashboard"
+            element={<AdminDashboard />}
+        />
+
+        <Route
+            path="students"
+            element={<AdminStudents />}
+        />
+
+        <Route
+            path="students/import"
+            element={<AdminImportStudents />}
+        />
+
+        <Route
+            path="profile"
+            element={<AdminProfile />}
+        />
+
+    </Route>
+</Route>
         {/* =====================================================
             UNKNOWN ROUTES
         ====================================================== */}

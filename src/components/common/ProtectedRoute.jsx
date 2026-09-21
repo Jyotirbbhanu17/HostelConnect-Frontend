@@ -12,13 +12,16 @@ function ProtectedRoute({ allowedRole }) {
   // Logged-in user has the wrong role
   if (allowedRole && user.role !== allowedRole) {
     if (user.role === "STUDENT") {
-      return <Navigate to="/dashboard" replace />;
-    }
+    return <Navigate to="/dashboard" replace />;
+}
 
-    if (user.role === "WARDEN") {
-      return <Navigate to="/warden/dashboard" replace />;
-    }
+if (user.role === "WARDEN") {
+    return <Navigate to="/warden/dashboard" replace />;
+}
 
+if (user.role === "ADMIN") {
+    return <Navigate to="/admin/dashboard" replace />;
+}
     // Unknown/unsupported role
     return <Navigate to="/login" replace />;
   }
