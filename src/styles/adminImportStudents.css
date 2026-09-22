@@ -1,0 +1,376 @@
+.admin-import-page {
+  width: 100%;
+}
+
+.admin-page-header {
+  margin-bottom: 28px;
+}
+
+.admin-page-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #101a35;
+}
+
+.admin-page-header p {
+  margin: 8px 0 0;
+  color: #667085;
+  font-size: 15px;
+}
+
+.admin-import-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Main Card */
+
+.admin-import-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.admin-import-section-header {
+  margin-bottom: 22px;
+}
+
+.admin-import-section-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #101a35;
+}
+
+.admin-import-section-header p {
+  margin: 7px 0 0;
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Upload Area */
+
+.admin-file-upload {
+  min-height: 260px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 14px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-file-upload:hover {
+  border-color: #2563eb;
+  background: #f5f8ff;
+}
+
+.admin-file-upload.drag-active {
+  border-color: #2563eb;
+  background: #eef4ff;
+  transform: scale(1.01);
+}
+
+.admin-file-input {
+  display: none;
+}
+
+.admin-file-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #eaf1ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.admin-file-upload h3 {
+  margin: 0;
+  color: #17213c;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.admin-file-upload p {
+  margin: 7px 0 10px;
+  color: #667085;
+  font-size: 14px;
+}
+
+.admin-file-format {
+  display: inline-block;
+  color: #7a8699;
+  font-size: 12px;
+}
+
+/* Selected File */
+
+.admin-selected-file {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-selected-file-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-excel-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: #e9f7ef;
+  color: #18864b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.admin-selected-file-name {
+  color: #17213c;
+  font-size: 14px;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.admin-selected-file-size {
+  margin-top: 3px;
+  color: #7a8699;
+  font-size: 12px;
+}
+
+.admin-remove-file {
+  border: none;
+  background: transparent;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.admin-remove-file:hover {
+  background: #fef2f2;
+}
+
+/* Messages */
+
+.admin-import-message {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.admin-import-message span {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-import-message.success {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.admin-import-message.success span {
+  color: #ffffff;
+  background: #16a34a;
+}
+
+.admin-import-message.error {
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.admin-import-message.error span {
+  color: #ffffff;
+  background: #dc2626;
+}
+
+/* Import Button */
+
+.admin-import-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.admin-import-btn {
+  min-width: 160px;
+  border: none;
+  border-radius: 9px;
+  padding: 12px 20px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-import-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.2);
+}
+
+.admin-import-btn:disabled {
+  background: #cbd5e1;
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+/* Info Card */
+
+.admin-import-info-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px;
+  display: flex;
+  gap: 14px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.admin-info-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #eaf1ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.admin-import-info-card h3 {
+  margin: 1px 0 7px;
+  color: #17213c;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.admin-import-info-card > div:last-child > p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.admin-info-list {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.admin-info-list div {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.admin-info-list span {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 1px;
+}
+
+.admin-info-list p {
+  margin: 0;
+  color: #475467;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .admin-import-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-import-info-card {
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-import-card {
+    padding: 20px;
+  }
+
+  .admin-page-header h1 {
+    font-size: 27px;
+  }
+
+  .admin-file-upload {
+    min-height: 220px;
+    padding: 24px 16px;
+  }
+
+  .admin-selected-file {
+    align-items: flex-start;
+  }
+
+  .admin-import-actions {
+    justify-content: stretch;
+  }
+
+  .admin-import-btn {
+    width: 100%;
+  }
+}
