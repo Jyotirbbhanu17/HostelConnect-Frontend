@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
 
+import { apiRequest } from "../../services/api";
+import "../../styles/adminImportStudents.css";
 import "../../styles/adminImportStudents.css";
 
 function AdminImportStudents() {
   const [file, setFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -61,7 +63,45 @@ function AdminImportStudents() {
       fileInputRef.current.value = "";
     }
   }
+  async function handleImport(event) {
+  event.preventDefault();
 
+  if (!file) {
+    setError("Please select an Excel file first.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await apiRequest("/admin/students/import", {
+      method: "POST",
+      body: formData,
+    });
+
+    setMessage(
+      response?.message || "Students imported successfully."
+    );
+
+    setFile(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  } catch (error) {
+    setError(
+      error?.data?.message ||
+        error?.message ||
+        "Failed to import students."
+    );
+  } finally {
+    setLoading(false);
+  }
+}
   
 
   return (
@@ -148,8 +188,20 @@ function AdminImportStudents() {
                   Remove
                 </button>
               </div>
+              
             )}
-
+{file && (
+  <div className="admin-import-actions">
+    <button
+      type="button"
+      className="admin-import-btn"
+      onClick={handleImport}
+      disabled={loading}
+    >
+      {loading ? "Importing..." : "Import Students"}
+    </button>
+  </div>
+)}
             {message && (
               <div className="admin-import-message success">
                 <span>✓</span>

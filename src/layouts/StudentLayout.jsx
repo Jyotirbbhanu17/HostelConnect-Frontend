@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import Sidebar from "../components/common/Sidebar";
+import Sidebar from "../components/common/SideBar";
 import { clearAuthSession } from "../services/authService";
 import { apiRequest } from "../services/api";
 
@@ -18,6 +18,27 @@ function StudentLayout() {
   const navigate = useNavigate();
 
   const [unreadCount, setUnreadCount] = useState(0);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [studentName, setStudentName] = useState("Student");
+
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem("hostelConnectUser");
+
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+
+        setStudentName(
+          user?.fullName ||
+            user?.name ||
+            "Student"
+        );
+      }
+    } catch (error) {
+      console.error("Failed to load student information:", error);
+    }
+  }, []);
 
   const loadUnreadCount = useCallback(async () => {
     try {
@@ -61,20 +82,63 @@ function StudentLayout() {
     };
   }, [loadUnreadCount]);
 
+  useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [location.pathname]);
+
   const handleLogout = () => {
     clearAuthSession();
     navigate("/login");
   };
 
+  const handleMenuClick = () => {
+    setMobileSidebarOpen(false);
+  };
+
+  const toggleSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setMobileSidebarOpen((prev) => !prev);
+    } else {
+      setSidebarCollapsed((prev) => !prev);
+    }
+  };
+
   return (
-    <div className="hc-app">
-      <Sidebar />
+    <div
+      className={`hc-app ${
+        sidebarCollapsed ? "sidebar-collapsed" : ""
+      }`}
+    >
+      <Sidebar
+        collapsed={sidebarCollapsed}
+        mobileOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+        onMenuClick={handleMenuClick}
+      />
+
+      {mobileSidebarOpen && (
+        <div
+          className="hc-sidebar-overlay"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
 
       <div className="hc-main">
         <header className="hc-topbar">
-          <h1 className="hc-title">
-            {PAGE_TITLES[location.pathname]}
-          </h1>
+          <div className="hc-topbar-left">
+            <button
+              className="hc-menu-btn"
+              type="button"
+              onClick={toggleSidebar}
+              aria-label="Toggle navigation menu"
+            >
+              ☰
+            </button>
+
+            <h1 className="hc-title">
+              {PAGE_TITLES[location.pathname]}
+            </h1>
+          </div>
 
           <div className="hc-top-actions">
             <button
@@ -82,7 +146,9 @@ function StudentLayout() {
               type="button"
               onClick={() => navigate("/notifications")}
               aria-label={`Notifications${
-                unreadCount > 0 ? `, ${unreadCount} unread` : ""
+                unreadCount > 0
+                  ? `, ${unreadCount} unread`
+                  : ""
               }`}
             >
               🔔
@@ -99,7 +165,7 @@ function StudentLayout() {
               type="button"
               onClick={() => navigate("/profile")}
             >
-              Jyotirbhanu
+              {studentName}
             </button>
 
             <button

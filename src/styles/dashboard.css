@@ -149,3 +149,148 @@
   font-weight: 800;
   line-height: 1;
 }
+/* Sidebar logo and navigation icons */
+
+.hc-sidebar-header {
+  position: relative;
+}
+
+.hc-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hc-logo {
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  object-fit: contain;
+}
+
+.hc-brand-text {
+  display: block;
+  white-space: nowrap;
+}
+
+.hc-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hc-nav-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.hc-nav-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hc-nav-text {
+  min-width: 0;
+  white-space: nowrap;
+}
+/* Collapsed sidebar */
+
+.hc-sidebar.collapsed {
+  width: 76px;
+  flex-basis: 76px;
+  padding-inline: 10px;
+}
+
+.hc-sidebar.collapsed .hc-brand {
+  justify-content: center;
+  margin-inline: 0;
+}
+
+.hc-sidebar.collapsed .hc-logo {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+}
+
+.hc-sidebar.collapsed .hc-brand-text,
+.hc-sidebar.collapsed .hc-nav-text {
+  display: none;
+}
+
+.hc-sidebar.collapsed .hc-nav-item {
+  justify-content: center;
+  padding-inline: 10px;
+}
+
+.hc-sidebar.collapsed .hc-nav-icon {
+  width: 22px;
+  height: 22px;
+  flex-basis: 22px;
+}
+/* Sidebar logo and navigation icons */
+
+.hc-sidebar-header {
+  width: 100%;
+}
+
+.hc-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hc-logo {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  object-fit: contain;
+  display: block;
+}
+
+.hc-brand-text {
+  white-space: nowrap;
+}
+
+.hc-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hc-nav-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hc-nav-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hc-nav-text {
+  min-width: 0;
+}
+
+.hc-sidebar-close {
+  display: none;
+}
