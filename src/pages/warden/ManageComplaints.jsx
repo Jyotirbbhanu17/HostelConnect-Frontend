@@ -160,6 +160,7 @@ function ManageComplaints() {
             <thead>
               <tr>
                 <th>Title</th>
+                <th>Submitted By</th>
                 <th>Category</th>
                 <th>Status</th>
                 <th>Priority</th>
@@ -172,15 +173,15 @@ function ManageComplaints() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan="7">Loading complaints...</td>
+                  <td colSpan="8">Loading complaints...</td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan="7">{error}</td>
+                  <td colSpan="8">{error}</td>
                 </tr>
               ) : complaints.length === 0 ? (
                 <tr>
-                  <td colSpan="7">No complaints found.</td>
+                  <td colSpan="8">No complaints found.</td>
                 </tr>
               ) : (
                 complaints.map((complaint) => (
@@ -188,7 +189,7 @@ function ManageComplaints() {
                     <td className="warden-title-cell">
                       {complaint.title}
                     </td>
-
+                  <td>{complaint.studentName || "-"}</td>
                     <td>{complaint.category}</td>
 
                     <td>

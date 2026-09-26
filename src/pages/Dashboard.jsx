@@ -513,7 +513,14 @@ function Dashboard() {
                                     {complaint.description ||
                                       "-"}
                                   </p>
-
+                                  {/* Description */}
+                                  <p>
+                                    <strong>
+                                      Submitted By:
+                                    </strong>{" "}
+                                    {complaint.studentName ||
+                                      "-"}
+                                  </p>
                                   {/* Image */}
                                   {complaint.imagePath && (
                                     <div className="complaint-image">

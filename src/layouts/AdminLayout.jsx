@@ -1,4 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import AdminSidebar from "../components/admin/AdminSidebar";
 
@@ -20,23 +21,65 @@ function AdminLayout() {
 
   const user = getAuthUser();
 
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
   const handleLogout = () => {
     clearAuthSession();
     navigate("/login", { replace: true });
+  };
+
+  const handleMenuClick = () => {
+    setMobileSidebarOpen(false);
+  };
+
+  const toggleSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setMobileSidebarOpen((prev) => !prev);
+    } else {
+      setSidebarCollapsed((prev) => !prev);
+    }
   };
 
   const pageTitle =
     PAGE_TITLES[location.pathname] || "Hostel Admin";
 
   return (
-    <div className="hc-app">
-      <AdminSidebar />
+    <div
+      className={`hc-app ${
+        sidebarCollapsed ? "sidebar-collapsed" : ""
+      }`}
+    >
+      <AdminSidebar
+        collapsed={sidebarCollapsed}
+        mobileOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+        onMenuClick={handleMenuClick}
+      />
+
+      {mobileSidebarOpen && (
+        <div
+          className="hc-sidebar-overlay"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
 
       <div className="hc-main">
         <header className="hc-topbar">
-          <h1 className="hc-title">
-            {pageTitle}
-          </h1>
+          <div className="hc-topbar-left">
+            <button
+              className="hc-menu-btn"
+              type="button"
+              onClick={toggleSidebar}
+              aria-label="Toggle navigation menu"
+            >
+              ☰
+            </button>
+
+            <h1 className="hc-title">
+              {pageTitle}
+            </h1>
+          </div>
 
           <div className="hc-top-actions">
             <button

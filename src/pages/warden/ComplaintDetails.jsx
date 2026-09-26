@@ -216,6 +216,11 @@ function ComplaintDetails() {
             </div>
 
             <div className="info-item">
+              <strong>Submitted By:</strong>{" "}
+              {complaint.studentName}
+            </div>
+
+            <div className="info-item">
               <strong>Category:</strong>{" "}
               {complaint.category}
             </div>
