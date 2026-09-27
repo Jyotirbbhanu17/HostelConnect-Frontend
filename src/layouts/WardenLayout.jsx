@@ -100,12 +100,12 @@ function WardenLayout() {
 
             {/* Notification Button */}
             <button
-              className="icon-btn"
-              type="button"
-              aria-label="Notifications"
-            >
-              🔔
-            </button>
+  className="notification-btn"
+  onClick={() => navigate("/warden/notices")}
+  title="View Notices"
+>
+  🔔
+</button>
 
             {/* Warden Profile */}
             <button
