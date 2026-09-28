@@ -15,6 +15,9 @@
   box-shadow: var(--hc-shadow-card);
   border: 1px solid var(--hc-border);
   transition: box-shadow 180ms ease, transform 180ms ease;
+
+  display: block !important;
+  overflow: hidden;
 }
 
 .student-notices-page .notice-card:hover {
@@ -22,35 +25,91 @@
   transform: translateY(-2px);
 }
 
+/* Title + Date */
 .student-notices-page .notice-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100%;
+  margin: 0 0 10px 0;
 }
 
 .student-notices-page .notice-header h3 {
   margin: 0;
   font-size: 20px;
+  line-height: 1.4;
 }
 
 .student-notices-page .notice-header span {
   color: #6b7280;
   font-size: 14px;
+  white-space: nowrap;
+  margin-left: 20px;
 }
 
-.student-notices-page .notice-card p {
-  color: #4b5563;
-  line-height: 1.6;
-}
-.student-notices-page .notice-author {
+/* Warden / Author */
+.student-notices-page .notice-card .notice-author {
+  display: block !important;
+  width: 100% !important;
+
+  margin: 0 0 14px 0 !important;
+  padding: 0 !important;
+
+  text-align: left !important;
+
   color: #6b7280;
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 12px;
+  line-height: 1.5;
+
+  position: static !important;
+  float: none !important;
+  clear: both !important;
 }
 
+/* Notice content */
+.student-notices-page .notice-card .notice-content {
+  display: block !important;
+  width: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  text-align: left !important;
+
+  color: #4b5563;
+  font-size: 16px;
+  line-height: 1.6;
+
+  position: static !important;
+  float: none !important;
+  clear: both !important;
+}
+
+/* Mobile */
 @media (max-width: 600px) {
-  .student-notices-page .notice-card { padding: 18px; }
-  .student-notices-page .notice-header { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .student-notices-page .notice-card {
+    padding: 18px;
+  }
+
+  .student-notices-page .notice-header {
+    align-items: flex-start !important;
+  }
+
+  .student-notices-page .notice-header h3 {
+    font-size: 18px;
+  }
+
+  .student-notices-page .notice-header span {
+    font-size: 13px;
+    margin-left: 10px;
+  }
+
+  .student-notices-page .notice-card .notice-author {
+    margin-bottom: 10px !important;
+  }
+
+  .student-notices-page .notice-card .notice-content {
+    font-size: 15px;
+  }
 }

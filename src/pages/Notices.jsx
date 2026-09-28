@@ -83,11 +83,13 @@ setNotices(sortedNotices);
               </span>
             </div>
 
-            <p className="notice-author">
+            <div className="notice-author">
               👤 {notice.author || "Hostel Warden"}
-            </p>
+            </div>
 
-            <p>{notice.content || notice.description}</p>
+            <div className="notice-content">
+              {notice.content || notice.description}
+            </div>
           </div>
         ))}
       </div>
