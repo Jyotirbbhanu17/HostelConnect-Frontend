@@ -23,6 +23,7 @@ import Notices from "./pages/Notices";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Warden Layout
 import WardenLayout from "./layouts/WardenLayout";
@@ -46,6 +47,11 @@ function App() {
         <Route
           path="/login"
           element={<Login />}
+        />
+
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
         />
 
         <Route

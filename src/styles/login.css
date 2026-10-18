@@ -115,6 +115,18 @@
   padding-right: 48px;
 }
 
+.login-forgot-password {
+  justify-self: end;
+  color: var(--hc-blue-700);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-forgot-password:hover {
+  text-decoration: underline;
+}
+
 .login-password-toggle {
   position: absolute;
   top: 50%;

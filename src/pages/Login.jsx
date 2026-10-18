@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginUser, saveAuthSession } from "../services/authService";
 import "../styles/login.css";
 
@@ -128,6 +128,9 @@ function Login() {
                 />
               </button>
             </div>
+            <Link className="login-forgot-password" to="/forgot-password">
+              Forgot Password?
+            </Link>
           </div>
 
           {error && (

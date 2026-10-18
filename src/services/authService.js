@@ -10,6 +10,14 @@ export async function loginUser({ email, password }) {
   });
 }
 
+export async function requestPasswordRecovery({ email }) {
+  return apiRequest("/auth/forgot-password", {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify({ email }),
+  });
+}
+
 export function saveAuthSession(user) {
   setAuthToken(user.token);
   localStorage.setItem(
