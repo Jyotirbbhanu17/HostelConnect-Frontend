@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, saveAuthSession } from "../services/authService";
+import hostelConnectLogo from "../assets/hostelconnect-logo.png";
 import "../styles/login.css";
 
 function Login() {
@@ -72,9 +73,11 @@ function Login() {
     <main className="login-page">
       <section className="login-card" aria-labelledby="login-title">
         <div className="login-brand">
-          <div className="login-brand__mark" aria-hidden="true">
-            HC
-          </div>
+          <img
+            className="login-brand__logo"
+            src={hostelConnectLogo}
+            alt="HostelConnect logo"
+          />
 
           <div>
             <h1 id="login-title">Hostel Connect</h1>
@@ -144,6 +147,10 @@ function Login() {
           </button>
         </form>
       </section>
+
+      <footer className="login-footer">
+        Made with <span aria-hidden="true">♥</span> by Jyotirbhanu
+      </footer>
     </main>
   );
 }

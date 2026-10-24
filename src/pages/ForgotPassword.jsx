@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { requestPasswordRecovery } from "../services/authService";
+import hostelConnectLogo from "../assets/hostelconnect-logo.png";
 import "../styles/forgotPassword.css";
 
 const GENERIC_SUCCESS_MESSAGE =
@@ -52,9 +53,11 @@ function ForgotPassword() {
     <main className="forgot-password-page">
       <section className="forgot-password-card" aria-labelledby="forgot-password-title">
         <div className="forgot-password-brand">
-          <div className="forgot-password-brand__mark" aria-hidden="true">
-            HC
-          </div>
+          <img
+            className="forgot-password-brand__logo"
+            src={hostelConnectLogo}
+            alt="HostelConnect logo"
+          />
           <div>
             <p className="forgot-password-brand__name">Hostel Connect</p>
             <p className="forgot-password-brand__subtitle">Hostel Management Portal</p>
