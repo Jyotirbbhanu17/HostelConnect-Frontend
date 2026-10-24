@@ -275,6 +275,8 @@
 .edit-modal {
   width: 100%;
   max-width: 600px;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
   background: white;
   border-radius: 18px;
   padding: 28px;

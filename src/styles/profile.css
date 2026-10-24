@@ -509,3 +509,9 @@
 .password-eye-btn:hover {
   opacity: 1;
 }
+
+.profile-header > div:last-child,
+.profile-item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

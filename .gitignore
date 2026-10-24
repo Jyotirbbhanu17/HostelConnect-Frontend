@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Local environment files may contain private credentials. Keep the public
+# production API URL in .env.production under version control.
+.env
+.env.*.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

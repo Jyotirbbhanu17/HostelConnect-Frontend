@@ -1,8 +1,6 @@
 import { useEffect, useState, Fragment } from "react";
-import { apiRequest } from "../services/api";
+import { API_BASE_URL, apiRequest } from "../services/api";
 import "../styles/myComplaints.css";
-
-const API_BASE_URL = "http://localhost:8081";
 
 function MyComplaints() {
   const [category, setCategory] = useState("");
@@ -94,7 +92,7 @@ function MyComplaints() {
       return imagePath;
     }
 
-    return `${API_BASE_URL}${imagePath}`;
+    return `${API_BASE_URL}/${imagePath.replace(/^\/+/, "")}`;
   };
 
   const toggleDetails = (id) => {

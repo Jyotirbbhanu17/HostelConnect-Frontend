@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { apiRequest } from "../services/api";
+import { API_BASE_URL, apiRequest } from "../services/api";
 
 function Dashboard() {
   // ============================================================
@@ -294,7 +294,7 @@ function Dashboard() {
       ""
     );
 
-    return `http://localhost:8081/${cleanPath}`;
+    return `${API_BASE_URL}/${cleanPath}`;
   };
 
   // ============================================================

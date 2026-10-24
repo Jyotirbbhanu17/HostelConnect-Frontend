@@ -30,14 +30,17 @@
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
+  gap: 16px;
   width: 100%;
   margin: 0 0 10px 0;
 }
 
 .student-notices-page .notice-header h3 {
+  min-width: 0;
   margin: 0;
   font-size: 20px;
   line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .student-notices-page .notice-header span {
@@ -94,6 +97,8 @@
 
   .student-notices-page .notice-header {
     align-items: flex-start !important;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .student-notices-page .notice-header h3 {
@@ -102,7 +107,7 @@
 
   .student-notices-page .notice-header span {
     font-size: 13px;
-    margin-left: 10px;
+    margin-left: 0;
   }
 
   .student-notices-page .notice-card .notice-author {

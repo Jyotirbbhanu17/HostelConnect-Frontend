@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { apiRequest } from "../../services/api";
+import { API_BASE_URL, apiRequest } from "../../services/api";
 import "../../styles/complaintDetails.css";
 
 function ComplaintDetails() {
@@ -249,7 +249,7 @@ function ComplaintDetails() {
           <div className="image-section">
             {complaint.imagePath ? (
               <img
-                src={`http://localhost:8081${complaint.imagePath}`}
+                src={`${API_BASE_URL}/${complaint.imagePath.replace(/^\/+/, "")}`}
                 alt={complaint.title}
               />
             ) : (
